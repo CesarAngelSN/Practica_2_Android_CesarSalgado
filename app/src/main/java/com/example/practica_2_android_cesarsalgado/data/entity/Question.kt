@@ -69,6 +69,6 @@ data class Question(
     }
 
     override fun toString(): String {
-        return "Question with id=$id, description='$description')"
+        return "Question with id=$id, description='$description', answers='$answers')"
     }
 }

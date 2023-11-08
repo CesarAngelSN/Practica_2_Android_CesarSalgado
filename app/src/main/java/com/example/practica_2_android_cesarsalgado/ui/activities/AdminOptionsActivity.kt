@@ -1,5 +1,7 @@
 package com.example.practica_2_android_cesarsalgado.ui.activities
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.practica_2_android_cesarsalgado.data.db.AppDatabase
 
 @Composable
-fun AdminOptionsActivity(navController: NavController, appDatabase: AppDatabase, userName: String?) {
+fun AdminOptionsActivity(navController: NavController, appDatabase: AppDatabase, applicationContext: Context, userName: String?) {
     var openDialog by remember {
         mutableStateOf(false)
     }
@@ -58,7 +60,12 @@ fun AdminOptionsActivity(navController: NavController, appDatabase: AppDatabase,
             confirmButton = {
                 TextButton(onClick = {
                     if (userName != null) {
-                        appDatabase.getUserDao().getByName(userName)
+                        appDatabase.getUserDao().deleteByName(userName)
+                        val deletedUser = Toast.makeText(applicationContext,
+                            "Deletion for $userName successfully done", Toast.LENGTH_SHORT)
+                        deletedUser.show()
+                        navController.popBackStack()
+                        openDialog = false
                     }
                 }) {
                     Text(text = "Confirm")

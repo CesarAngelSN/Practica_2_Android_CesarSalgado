@@ -229,6 +229,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                 val question = Question(0, questionString, selectedText, answers, 0, image)
                 appDatabase.getQuestionDao().insert(question)
                 newQuestion.show()
+                questionString = ""
                 println(appDatabase.getQuestionDao().getAll())
             }) {
                 Text(text = "Add Question")

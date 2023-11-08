@@ -34,15 +34,15 @@ fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
         }
         composable(Paths.QuestionActivity.path + "/{mode}") {
             val mode = it.arguments?.getString("mode")
-            QuestionActivity(appDatabase, mode)
+            QuestionActivity(appDatabase, applicationContext, mode)
         }
         composable(Paths.PlayerOptionsActivity.path + "/{userName}") {
             val userName = it.arguments?.getString("userName")
-            PlayerOptionsActivity(navController, appDatabase, userName)
+            PlayerOptionsActivity(navController, appDatabase, applicationContext, userName)
         }
         composable(Paths.AdminOptionsActivity.path + "/{userName}") {
             val userName = it.arguments?.getString("userName")
-            AdminOptionsActivity(navController, appDatabase, userName)
+            AdminOptionsActivity(navController, appDatabase, applicationContext, userName)
         }
         composable(Paths.QuestionAddActivity.path) {
             QuestionAddActivity(navController, appDatabase, applicationContext)

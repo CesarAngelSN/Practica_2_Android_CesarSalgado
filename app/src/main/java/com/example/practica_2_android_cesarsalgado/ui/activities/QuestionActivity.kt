@@ -1,7 +1,8 @@
 package com.example.practica_2_android_cesarsalgado.ui.activities
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,14 +25,16 @@ import com.example.practica_2_android_cesarsalgado.R
 import com.example.practica_2_android_cesarsalgado.data.db.AppDatabase
 import com.example.practica_2_android_cesarsalgado.data.entity.Question
 import java.security.SecureRandom
+import java.util.Random
 
 @Composable
-fun QuestionActivity(appDatabase: AppDatabase, mode: String) {
+fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode: String?) {
     val questionList = appDatabase.getQuestionDao().getAll().toMutableList()
     println(questionList)
     val questionArrayList = ArrayList(questionList)
+    var i = 0
     var question by remember {
-        mutableStateOf(getRandomQuestion(questionArrayList))
+        mutableStateOf(questionArrayList[i])
     }
     /*var image by remember {
         mutableStateOf()
@@ -40,7 +42,9 @@ fun QuestionActivity(appDatabase: AppDatabase, mode: String) {
     val answersString by remember {
         mutableStateOf(question.getAnswers())
     }
-    val answersArray = answersString.split(";")
+    val answersArray by remember {
+        mutableStateOf(answersString.split(";").shuffled(Random(0)))
+    }
     var color by remember {
         mutableStateOf(Color.Blue)
     }
@@ -74,7 +78,7 @@ fun QuestionActivity(appDatabase: AppDatabase, mode: String) {
                 }
             }
             else {
-                Column {
+                Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly){
                     Button(onClick = {
                         color = if (answersArray[0] == question.getCorrectAnswer()) {
                             Color.Green
@@ -117,13 +121,34 @@ fun QuestionActivity(appDatabase: AppDatabase, mode: String) {
             }
         }
         Row (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterVertically){
-            Button(onClick = {
-
-            }) {
-                Text(text = "Previous")
+            if (mode == "Practice") {
+                Button(onClick = {
+                    if (i > 0) {
+                        question = questionArrayList[i--]
+                    }
+                    else {
+                        val previousQuestion = Toast.makeText(applicationContext,
+                            "There is no previous question yet.", Toast.LENGTH_SHORT)
+                        previousQuestion.show()
+                    }
+                }) {
+                    Text(text = "Previous")
+                }
+                Button(onClick = {
+                    question = getRandomQuestion(questionArrayList)
+                }) {
+                    Text(text = "Random")
+                }
             }
             Button(onClick = {
-                question = getRandomQuestion(questionArrayList)
+                if (i < questionArrayList.size - 1) {
+                    question = questionArrayList[i++]
+                }
+                else {
+                    val lastQuestion = Toast.makeText(applicationContext,
+                        "Arrived to the last question.", Toast.LENGTH_SHORT)
+                    lastQuestion.show()
+                }
             }) {
                 Text(text = "Next")
             }
@@ -131,9 +156,7 @@ fun QuestionActivity(appDatabase: AppDatabase, mode: String) {
     }
 }
 
-fun getRandomQuestion(questionList: ArrayList<Question>): Question{
+fun getRandomQuestion(questionList: ArrayList<Question>): Question {
     val random = SecureRandom().nextInt(questionList.size - 1)
-    val question = questionList[random]
-    questionList.removeAt(random)
-    return question
+    return questionList[random]
 }
