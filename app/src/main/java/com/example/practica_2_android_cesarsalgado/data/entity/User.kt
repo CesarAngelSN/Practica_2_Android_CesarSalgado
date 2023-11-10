@@ -16,8 +16,13 @@ data class User(
     @ColumnInfo(name = "name")
     private val name: String,
     @ColumnInfo(name = "password")
-    private val password: String
-) {
+    private val password: String,
+    @ColumnInfo(name = "games played")
+    private var gamesPlayed: Int,
+    @ColumnInfo(name = "total correct answers")
+    private var totalCorrectAnswers: Int
+) : Comparable<User>
+{
     fun getId(): Int {
         return id
     }
@@ -30,6 +35,33 @@ data class User(
     fun getPassword(): String {
         return password
     }
+    fun getGamesPlayed(): Int {
+        return gamesPlayed
+    }
+    fun getTotalCorrectAnswers(): Int {
+        return totalCorrectAnswers
+    }
+    fun setGamesPlayed(): Unit {
+        gamesPlayed++
+    }
+    fun setTotalCorrectAnswers(): Unit {
+        gamesPlayed++
+    }
+
+    override fun compareTo(other: User): Int {
+        var result = 0
+        if (this.getTotalCorrectAnswers() > other.getTotalCorrectAnswers()) {
+            result = 1
+        }
+        else if (this.getTotalCorrectAnswers() < other.getTotalCorrectAnswers()) {
+            result = -1
+        }
+        else {
+            result = 0
+        }
+        return result
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

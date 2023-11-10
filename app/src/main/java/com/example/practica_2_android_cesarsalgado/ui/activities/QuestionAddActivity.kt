@@ -38,12 +38,6 @@ import java.io.ByteArrayOutputStream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, applicationContext: Context) {
-    var selectedImageUri by remember {
-        mutableStateOf("")
-    }
-    val getContent = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        uri -> selectedImageUri = uri.toString()
-    }
     var questionString by remember {
         mutableStateOf("")
     }
@@ -54,21 +48,24 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
     var selectedText by remember {
         mutableStateOf(types[0])
     }
-    var answers: String
+    var answers: String = String()
     var image: ByteArray? = null
-
+    var isErrorTitle by remember {
+        mutableStateOf(true)
+    }
     Column (Modifier.fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
         Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
             Text(text = "Write your question")
             TextField(value = questionString,
                 onValueChange = {
                 text -> questionString = text
+                    isErrorTitle = questionString.length > 150 || questionString.isEmpty()
             },
             supportingText = {
                 Text(text = "${questionString.length}/150")
             },
-            isError = (questionString.length > 150))
-        }
+            isError = isErrorTitle
+        )}
         Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
             Text(text = "What kind of question is it?")
             Box (contentAlignment = Alignment.Center) {
@@ -102,6 +99,18 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                 }
             }
         }
+        var isError1 by remember {
+            mutableStateOf(true)
+        }
+        var isError2 by remember {
+            mutableStateOf(true)
+        }
+        var isError3 by remember {
+            mutableStateOf(true)
+        }
+        var isError4 by remember {
+            mutableStateOf(true)
+        }
         if (selectedText.equals("Selection")) {
             var answer1 by remember {
                 mutableStateOf("")
@@ -118,58 +127,47 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
             Column {
                 OutlinedTextField(
                     value = answer1,
-                    onValueChange = { text -> answer1 = text},
+                    onValueChange = { text -> answer1 = text
+                        isError1 = answer1.length > 100},
                     label = { Text("Correct Answer") },
                     supportingText = {
                         Text(text = "${answer1.length}/100")
                     },
-                    isError = (answer1.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Green,
-                        unfocusedBorderColor = Color.Green
-                    )
+                    isError = isError1,
                 )
                 OutlinedTextField(
                     value = answer2,
-                    onValueChange = { text -> answer2 = text},
+                    onValueChange = { text -> answer2 = text
+                        isError2 = answer2.length > 100},
                     label = { Text("Incorrect Answer") },
                     supportingText = {
                         Text(text = "${answer2.length}/100")
                     },
-                    isError = (answer2.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Red,
-                        unfocusedBorderColor = Color.Red
-                    )
+                    isError = isError2,
                 )
                 OutlinedTextField(
                     value = answer3,
-                    onValueChange = { text -> answer3 = text},
+                    onValueChange = { text -> answer3 = text
+                        isError3 = answer3.length > 100},
                     label = { Text("Incorrect Answer") },
                     supportingText = {
                         Text(text = "${answer3.length}/100")
                     },
-                    isError = (answer3.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Red,
-                        unfocusedBorderColor = Color.Red
-                    )
+                    isError = isError3,
                 )
                 OutlinedTextField(
                     value = answer4,
-                    onValueChange = { text -> answer4 = text},
+                    onValueChange = { text -> answer4 = text
+                        isError4 = answer4.length > 100},
                     label = { Text("Incorrect Answer") },
                     supportingText = {
                         Text(text = "${answer4.length}/100")
                     },
-                    isError = (answer4.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Red,
-                        unfocusedBorderColor = Color.Red
-                    )
+                    isError = isError4,
                 )
             }
-            answers = "$answer1;$answer2;$answer3;$answer4"
+            answers = (if(answer1.isNotEmpty()) "$answer1;" else "" + if(answer2.isNotEmpty()) "$answer2;" else "" +
+                    if(answer3.isNotEmpty()) "$answer3;" else "" + if(answer4.isNotEmpty()) "$answer4;" else "")
         }
         else {
             var answer1 by remember {
@@ -181,41 +179,49 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
             Column {
                 OutlinedTextField(
                     value = answer1,
-                    onValueChange = { text -> answer1 = text},
+                    onValueChange = { text -> answer1 = text
+                        isError1 = answer1.length > 100 || answer1.isEmpty()},
                     label = { Text("True Answer") },
                     supportingText = {
                         Text(text = "${answer1.length}/100")
                     },
-                    isError = (answer1.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Green,
-                        unfocusedBorderColor = Color.Green
-                    )
+                    isError = isError1,
                 )
                 OutlinedTextField(
                     value = answer2,
-                    onValueChange = { text -> answer2 = text},
+                    onValueChange = { text -> answer2 = text
+                        isError2 = answer2.length > 100 || answer2.isEmpty()},
                     label = { Text("False Answer") },
                     supportingText = {
                         Text(text = "${answer2.length}/100")
                     },
-                    isError = (answer2.length > 100),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Red,
-                        unfocusedBorderColor = Color.Red
-                    )
+                    isError = isError2,
                 )
             }
-            answers = "$answer1;$answer2"
+            answers = (if(answer1.isNotEmpty()) "$answer1;" else "" + if(answer2.isNotEmpty()) "$answer2;" else "")
         }
         Row (Modifier.fillMaxWidth(), Arrangement.SpaceAround, Alignment.CenterVertically){
+            var selectedImageUri by remember {
+                mutableStateOf("")
+            }
+            val getContent = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+                    uri -> selectedImageUri = uri.toString()
+            }
             Button( onClick = {
                 getContent.launch("image/*")
-                if (selectedImageUri != null) {
-                    val imageBitmap: Bitmap = BitmapFactory.decodeFile(selectedImageUri)
-                    val stream = ByteArrayOutputStream()
-                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                    image= stream.toByteArray()
+                if (selectedImageUri.isNotEmpty()) {
+                    if (selectedImageUri ==  null) {
+                        selectedImageUri = ""
+                        val noURIFound = Toast.makeText(applicationContext,
+                            "No URI found!", Toast.LENGTH_SHORT)
+                        noURIFound.show()
+                    }
+                    else {
+                        val imageBitmap: Bitmap = BitmapFactory.decodeFile(selectedImageUri)
+                        val stream = ByteArrayOutputStream()
+                        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        image= stream.toByteArray()
+                    }
                 }
             }) {
                 Text(text = "Select Image")
@@ -231,7 +237,8 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                 newQuestion.show()
                 questionString = ""
                 println(appDatabase.getQuestionDao().getAll())
-            }) {
+            },
+            enabled = !isErrorTitle && !isError1 && !isError2 && !isError3 && !isError4) {
                 Text(text = "Add Question")
             }
             Button(onClick = {

@@ -116,10 +116,14 @@ fun RegisterActivity(navController: NavController, appDatabase: AppDatabase, app
                     "User $user already exists", Toast.LENGTH_SHORT)
                 if (selectedText.equals("Admin")) {
                     if (appDatabase.getUserDao().getByName(user) == null) {
-                        var newAdmin = User(0, "admin", user, password)
+                        var newAdmin = User(0, "admin", user, password, 0, 0)
                         appDatabase.getUserDao().insert(newAdmin)
                         newUser.show()
-                        navController.navigate("adminoptionsactivity/$user")
+                        navController.navigate("adminoptionsactivity/$user") {
+                            popUpTo("registeractivity") {
+                                inclusive = true
+                            }
+                        }
                     }
                     else {
                         wrongUser.show()
@@ -128,10 +132,14 @@ fun RegisterActivity(navController: NavController, appDatabase: AppDatabase, app
                 }
                 else {
                     if (appDatabase.getUserDao().getByName(user) == null) {
-                        var newPlayer = User(0, "player", user, password)
+                        var newPlayer = User(0, "player", user, password, 0, 0)
                         appDatabase.getUserDao().insert(newPlayer)
                         newUser.show()
-                        navController.navigate("questionactivity/$user")
+                        navController.navigate("playeroptionsactivity/$user") {
+                            popUpTo("registeractivity") {
+                                inclusive = true
+                            }
+                        }
                     }
                     else {
                         wrongUser.show()

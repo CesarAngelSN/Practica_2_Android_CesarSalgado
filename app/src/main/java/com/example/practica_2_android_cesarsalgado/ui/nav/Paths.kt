@@ -10,4 +10,5 @@ sealed class Paths(val path: String) {
     object AdminOptionsActivity : Paths("adminoptionsactivity")
     object QuestionAddActivity : Paths("questionaddactivity")
     object QuestionDeleteActivity : Paths("questiondeleteactivity")
+    object RankingActivity : Paths("rankingactivity")
 }

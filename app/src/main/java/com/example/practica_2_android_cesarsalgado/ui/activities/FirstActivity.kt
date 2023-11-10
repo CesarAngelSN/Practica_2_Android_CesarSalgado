@@ -28,6 +28,10 @@ fun FirstActivity(navController: NavController){
     }
     LaunchedEffect(true) {
         delay(2000)
-        navController.navigate("authenticationactivity")
+        navController.navigate("authenticationactivity"){
+            popUpTo("firstactivity") {
+                inclusive = true
+            }
+        }
     }
 }

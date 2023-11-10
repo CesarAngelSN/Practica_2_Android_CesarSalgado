@@ -44,7 +44,9 @@ fun PlayerOptionsActivity(navController: NavController, appDatabase: AppDatabase
         }) {
             Text(text = "Practice Mode")
         }
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {
+            navController.navigate("rankingactivity")
+        }) {
             Text(text = "Ranking")
         }
         Button(onClick = {

@@ -11,7 +11,7 @@ interface UserDao {
     fun getById(id: Int): User
 
     @Query("select * from User where name = :name")
-    fun getByName(name: String): User
+    fun getByName(name: String?): User
 
     @Query("select * from User")
     fun getAll(): List<User>
@@ -27,4 +27,10 @@ interface UserDao {
 
     @Query("update User set name = :name, password = :password where id = :id")
     fun update(id: Int, name: String, password: String): Unit
+
+    /*@Query("update User set gamesPlayed = gamesPlayed + :one where name = :name")
+    fun updateGamesPlayed(name: String, one: Int): Unit
+
+    @Query("update User set totalCorrectAnswers = totalCorrectAnswers + :one where name = :name")
+    fun updateCorrectQuestionsAnswered(name: String, one: Int): Unit*/
 }
