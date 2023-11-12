@@ -64,11 +64,11 @@ fun QuestionDeleteActivity(navController: NavController, appDatabase: AppDatabas
             )
             {
                 TextField(
-                    value = "Select a question",
+                    value = selectedText,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor().fillMaxWidth(0.8f)
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,

@@ -71,6 +71,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                 text -> questionString = text
                     isErrorTitle = questionString.length > 150 || questionString.isEmpty()
             },
+                Modifier.fillMaxWidth(0.8f),
             supportingText = {
                 Text(text = "${questionString.length}/150")
             },
@@ -221,7 +222,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
             },
                 Modifier.width(160.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green)),
-            enabled = !isErrorTitle && !isError1 && !isError2 && !isError3 && !isError4) {
+            enabled = !isErrorTitle && !isError1 && !isError2) {
                 Text(text = "Add Question", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
             Button(onClick = {
