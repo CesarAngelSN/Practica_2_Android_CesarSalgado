@@ -142,7 +142,7 @@ fun RegisterActivity(navController: NavController, appDatabase: AppDatabase, app
                 ) {
                     users.forEach { item ->
                         DropdownMenuItem(
-                            text = { Text(text = item, color = colorResource(R.color.background)) },
+                            text = { Text(text = item, color = colorResource(R.color.dark_green)) },
                             onClick = {
                                 selectedText = item
                                 expanded = false

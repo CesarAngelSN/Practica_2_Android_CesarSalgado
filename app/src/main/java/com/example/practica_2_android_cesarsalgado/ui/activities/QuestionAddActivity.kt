@@ -98,7 +98,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     ) {
                         types.forEach { item ->
                             DropdownMenuItem(
-                                text = { Text(text = item) },
+                                text = { Text(text = item, color = colorResource(R.color.dark_green)) },
                                 onClick = {
                                     selectedText = item
                                     expanded = false
