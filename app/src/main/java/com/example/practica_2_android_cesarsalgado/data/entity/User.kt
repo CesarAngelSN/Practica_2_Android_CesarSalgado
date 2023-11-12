@@ -17,9 +17,9 @@ data class User(
     private val name: String,
     @ColumnInfo(name = "password")
     private val password: String,
-    @ColumnInfo(name = "games played")
+    @ColumnInfo(name = "gamesPlayed")
     private var gamesPlayed: Int,
-    @ColumnInfo(name = "total correct answers")
+    @ColumnInfo(name = "totalCorrectAnswers")
     private var totalCorrectAnswers: Int
 ) : Comparable<User>
 {

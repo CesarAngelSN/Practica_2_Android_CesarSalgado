@@ -52,7 +52,8 @@ fun QuestionDeleteActivity(navController: NavController, appDatabase: AppDatabas
         Modifier
             .background(colorResource(id = R.color.background))
             .fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally) {
-        Text(text = "Select the question you would like to delete.", textAlign = TextAlign.Center, fontSize = 20.sp,
+        Text(text = "Select the question you would like to delete.", Modifier.fillMaxWidth(0.8f),
+            textAlign = TextAlign.Center, fontSize = 20.sp,
             color = colorResource(id = R.color.dark_green))
         Box(contentAlignment = Alignment.Center) {
             ExposedDropdownMenuBox(
@@ -91,14 +92,14 @@ fun QuestionDeleteActivity(navController: NavController, appDatabase: AppDatabas
             },
                 Modifier.width(120.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green))) {
-                Text(text = "Delete", fontSize = 20.sp, color = colorResource(id = R.color.background))
+                Text(text = "Delete", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
             Button(onClick = {
                 navController.popBackStack()
             },
                 Modifier.width(120.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green))) {
-                Text(text = "Back", fontSize = 20.sp, color = colorResource(id = R.color.background))
+                Text(text = "Back", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
         }
         if (openDialog) {

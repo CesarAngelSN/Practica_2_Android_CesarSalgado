@@ -31,7 +31,7 @@ class Main : ComponentActivity() {
                         "SQLite_DB").fallbackToDestructiveMigration().
                     allowMainThreadQueries().build()
                     if (appDatabase.getQuestionDao().getAll().isEmpty()) {
-                        val question1 = Question(0, "What's 11 in binary", "Selection", "3;11;2;121")
+                        val question1 = Question(0, "What's 11 in binary?", "Selection", "3;11;2;121")
                         val question2 = Question(0, "What's the fourth month of the year?", "Selection", "April;June;May;December")
                         val question3 = Question(0, "Where is the rapper SHO-HAI from?", "Selection", "Zaragoza;Rome;Lugano;Berlin")
                         val question4 = Question(0, "Is Zaragoza the best place?", "True/False", "No;Yes")

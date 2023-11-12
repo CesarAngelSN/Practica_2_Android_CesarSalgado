@@ -72,7 +72,7 @@ fun PlayerOptionsActivity(navController: NavController, appDatabase: AppDatabase
             },
                 Modifier.fillMaxWidth(0.6f),
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_green))) {
-                Text(text = "Delete User", fontSize = 18.sp, color = colorResource(id = R.color.background))
+                Text(text = "Delete Account", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
             Button(onClick = {
                 navController.popBackStack()

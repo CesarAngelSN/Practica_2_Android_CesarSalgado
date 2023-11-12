@@ -16,6 +16,7 @@ import com.example.practica_2_android_cesarsalgado.ui.activities.QuestionAddActi
 import com.example.practica_2_android_cesarsalgado.ui.activities.QuestionDeleteActivity
 import com.example.practica_2_android_cesarsalgado.ui.activities.RankingActivity
 import com.example.practica_2_android_cesarsalgado.ui.activities.RegisterActivity
+import com.example.practica_2_android_cesarsalgado.ui.activities.StatsActivity
 
 @Composable
 fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
@@ -37,7 +38,7 @@ fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
             val mode = it.arguments?.getString("mode")
             val userName = it.arguments?.getString("userName")
             appDatabase.getUserDao().updateGamesPlayed(userName)
-            QuestionActivity(appDatabase, applicationContext, mode, userName)
+            QuestionActivity(navController, appDatabase, applicationContext, mode, userName)
         }
         composable(Paths.PlayerOptionsActivity.path + "/{userName}") {
             val userName = it.arguments?.getString("userName")
@@ -55,6 +56,10 @@ fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
         }
         composable(Paths.RankingActivity.path) {
             RankingActivity(appDatabase, navController)
+        }
+        composable(Paths.StatsActivity.path + "/{correctAnswers}") {
+            val correctAnswers = it.arguments?.getString("correctAnswers")
+            StatsActivity(navController, appDatabase, correctAnswers)
         }
     }
 }

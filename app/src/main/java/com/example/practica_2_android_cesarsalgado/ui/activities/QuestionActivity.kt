@@ -1,6 +1,7 @@
 package com.example.practica_2_android_cesarsalgado.ui.activities
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.practica_2_android_cesarsalgado.R
 import com.example.practica_2_android_cesarsalgado.data.db.AppDatabase
 import com.example.practica_2_android_cesarsalgado.data.entity.Question
@@ -45,10 +47,8 @@ import java.security.SecureRandom
 import java.util.Random
 
 
-var isAnswered = false
-var correctAnswers = 0
 @Composable
-fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode: String?, userName: String?) {
+fun QuestionActivity(navController: NavController, appDatabase: AppDatabase, applicationContext: Context, mode: String?, userName: String?) {
     val questionList = appDatabase.getQuestionDao().getAll().toMutableList()
     println(questionList)
     val questionArrayList = ArrayList(questionList)
@@ -70,17 +70,20 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
     var progress by remember {
         mutableFloatStateOf(0.0f)
     }
-    var color = R.color.dark_green
-    /*var color by remember {
-        mutableIntStateOf(R.color.dark_green)
-    }*/
-    /*var selectedAnswerIndex by remember {
-        mutableIntStateOf(-1)
-    }
-    var isCorrectAnswer by remember {
+    var isAnswered by remember {
         mutableStateOf(false)
-    }*/
-
+    }
+    var correctAnswers by remember {
+        mutableIntStateOf(0)
+    }
+    var color by remember {
+        mutableIntStateOf(R.color.dark_green)
+    }
+    var initialColor by remember {
+        mutableIntStateOf(R.color.dark_green)
+    }
+    val ding = MediaPlayer.create(applicationContext, R.raw.ding)
+    val wrong = MediaPlayer.create(applicationContext, R.raw.wrong)
     Column(
         Modifier
             .background(colorResource(id = R.color.background))
@@ -98,7 +101,7 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
                     color = colorResource(id = R.color.light_green),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
-                        .fillMaxHeight(0.1f).padding(10.dp))
+                        .fillMaxHeight(0.1f))
             }
         }
         Row(
@@ -119,37 +122,146 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
-            if (question.getType() == "Selection") {
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[0], color, appDatabase, userName)
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[1], color, appDatabase, userName)
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[2], color, appDatabase, userName)
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[3], color, appDatabase, userName)
+            /*if (question.getType() == "Selection") {
+                ButtonAnswer(answer = answersArray[0],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor,false)
+                ButtonAnswer(answer = answersArray[1],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor, false)
+                ButtonAnswer(answer = answersArray[2],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor, false)
+                ButtonAnswer(answer = answersArray[3],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor, false)
             }
             else {
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[0], color, appDatabase, userName)
-                ButtonAnswers(correctAnswer = question.getCorrectAnswer(), currentAnswer = answersArray[1], color, appDatabase, userName)
-            }
-            /*answersArray.forEachIndexed { index, answer ->
-                isCorrectAnswer = answer == question.getCorrectAnswer()
-                Button(
-                    onClick = {
-                        if (selectedAnswerIndex == -1) {
-                            selectedAnswerIndex = index
-                            color = if (isCorrectAnswer) {
-                                R.color.light_green
-                            } else {
-                                R.color.red
-                            }
-                        }
-                    }, Modifier.fillMaxWidth(0.6f),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = color))
-                ) {
-                    Text(text = answer, color = colorResource(id = R.color.background))
-                }
-                if (isCorrectAnswer) {
-                    appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName, 1)
-                }
+                ButtonAnswer(answer = answersArray[0],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor, false)
+                ButtonAnswer(answer = answersArray[1],
+                    correctAnswer = question.getCorrectAnswer(),
+                    applicationContext = applicationContext, initialColor, false)
             }*/
+            if (question.getType() == "Selection") {
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[0]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[0], color = colorResource(id = R.color.background))
+                }
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[1]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[1], color = colorResource(id = R.color.background))
+                }
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[2]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[2], color = colorResource(id = R.color.background))
+                }
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[3]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[3], color = colorResource(id = R.color.background))
+                }
+            }
+            else {
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[0]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[0], color = colorResource(id = R.color.background))
+                }
+                Button(onClick = {
+                    if (!isAnswered) {
+                        if (question.getCorrectAnswer() == answersArray[1]) {
+                            ding.start()
+                            color = R.color.light_green
+                            correctAnswers++
+                            appDatabase.getUserDao().updateCorrectQuestionsAnswered(userName)
+                        }
+                        else {
+                            wrong.start()
+                            color = R.color.red
+                        }
+                        isAnswered = true
+                    }
+                },
+                    Modifier.fillMaxWidth(0.6f),
+                    colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))) {
+                    Text(text = answersArray[1], color = colorResource(id = R.color.background))
+                }
+            }
         }
         Row (
             Modifier
@@ -165,10 +277,8 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
                         question = questionArrayList[--i]
                     }
                     imageId = getRandomImage(images)
-                    color = R.color.dark_green
+                    initialColor = R.color.dark_green
                     isAnswered = false
-                    //isCorrectAnswer = false
-                    //selectedAnswerIndex =-1
                 }) {
                     Row(Modifier.width(60.dp), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
                         Icon(imageVector= Icons.Filled.ArrowBack, contentDescription = "Arrow back")
@@ -180,8 +290,6 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
                     imageId = getRandomImage(images)
                     color = R.color.dark_green
                     isAnswered = false
-                    //isCorrectAnswer = false
-                    //selectedAnswerIndex =-1
                 }) {
                     Row(Modifier.width(60.dp), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
                         Text(text = "Random")
@@ -189,25 +297,26 @@ fun QuestionActivity(appDatabase: AppDatabase, applicationContext: Context, mode
                 }
             }
             Button(onClick = {
-                if (mode == "Practice" && i == questionArrayList.size - 1) {
-                    i = 0
-                    question = questionArrayList[i]
+                if (i == questionArrayList.size - 1) {
+                    if (mode == "Practice") {
+                        i = 0
+                        question = questionArrayList[i]
+                    }
+                    else {
+                        navController.navigate("statsactivity/$correctAnswers") {
+                            popUpTo("questionactivity") {
+                                inclusive = true
+                            }
+                        }
+                    }
                 }
-                else if (i < questionArrayList.size - 1) {
+                else {
                     question = questionArrayList[++i]
                     progress += progressFraction
-                    //color = R.color.dark_green
-                }
-                else if (mode == "Exam"){
-                    /*val lastQuestion = Toast.makeText(applicationContext,
-                        "Arrived to the last question.", Toast.LENGTH_SHORT)
-                    lastQuestion.show()*/
                 }
                 imageId = getRandomImage(images)
                 color = R.color.dark_green
                 isAnswered = false
-                //isCorrectAnswer = false
-                //selectedAnswerIndex =-1
             }) {
                 Row(Modifier.width(60.dp), Arrangement.SpaceEvenly, Alignment.CenterVertically) {
                     Text(text = "Next")
@@ -227,28 +336,36 @@ fun getRandomImage(images: ArrayList<Int>): Int {
     val random = SecureRandom().nextInt(images.size)
     return images[random]
 }
-
-//DESCUBRIR CÓMO REINICIAR EL VALOR DE COLOR PARA QUE NO SE PASE A OTRAS PREGUNTAS
+/*
 @Composable
-fun ButtonAnswers(correctAnswer: String, currentAnswer: String, defaultColor: Int, appDatabase: AppDatabase, user: String?) {
-    var color by remember {
-        mutableIntStateOf(defaultColor)
-    }
-    Button(onClick = {
-        if (!isAnswered) {
-            if (correctAnswer == currentAnswer) {
-                color = R.color.light_green
-                correctAnswers++
-                appDatabase.getUserDao().updateCorrectQuestionsAnswered(user)
+fun ButtonAnswer(answer: String, correctAnswer: String, applicationContext: Context, initialColor: Int, initialState: Boolean) {
+    val ding = MediaPlayer.create(applicationContext, R.raw.ding)
+    val wrong = MediaPlayer.create(applicationContext, R.raw.wrong)
+    var isAnswered by remember { mutableStateOf(initialState) }
+    var color by remember { mutableIntStateOf(R.color.dark_green) }
+    Button(
+        onClick = {
+            if (!isAnswered) {
+                if (answer == correctAnswer) {
+                    ding.start()
+                    color = R.color.light_green
+                    // Update other necessary states or perform actions for correct answer
+                } else {
+                    wrong.start()
+                    color = R.color.red
+                    // Update other necessary states or perform actions for wrong answer
+                }
+                isAnswered = true
             }
             else {
-                color = R.color.red
+                color = R.color.dark_green
             }
-            isAnswered = true
-        }
-    },
+        },
         Modifier.fillMaxWidth(0.6f),
-        colors = ButtonDefaults.buttonColors(colorResource(id = color))) {
-        Text(text = currentAnswer, color = colorResource(id = R.color.background))
+        colors = ButtonDefaults.buttonColors(colorResource(if (isAnswered) color else R.color.dark_green))
+    ) {
+        Text(text = answer, color = colorResource(id = R.color.background))
     }
-}
+}*/
+
+//DESCUBRIR CÓMO REINICIAR EL VALOR DE COLOR PARA QUE NO SE PASE A OTRAS PREGUNTAS

@@ -34,9 +34,9 @@ interface UserDao {
     @Query("update User set name = :name, password = :password where id = :id")
     fun update(id: Int, name: String, password: String): Unit
 
-    @Query("update User set 'games played' = 'games played' + 1 where name = :name")
+    @Query("update User set gamesPlayed = (gamesPlayed + 1) where name = :name")
     fun updateGamesPlayed(name: String?): Unit
 
-    @Query("update User set 'total correct answers' = 'total correct answers' + 1 where name = :name")
+    @Query("update User set totalCorrectAnswers = (totalCorrectAnswers + 1) where name = :name")
     fun updateCorrectQuestionsAnswered(name: String?): Unit
 }

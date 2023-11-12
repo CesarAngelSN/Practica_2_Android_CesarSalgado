@@ -50,7 +50,8 @@ fun RankingActivity(appDatabase: AppDatabase, navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.LightGray), Arrangement.Center
+                            .background(Color.LightGray), Arrangement.Center,
+                        Alignment.CenterVertically
                     ) {
                         Text(
                             text = "Player",
@@ -87,12 +88,12 @@ fun RankingActivity(appDatabase: AppDatabase, navController: NavController) {
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = appDatabase.getUserDao().getCorrectAnswers(user.getName()).toString(),
+                                text = user.getTotalCorrectAnswers().toString(),
                                 modifier = Modifier.weight(1f),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = appDatabase.getUserDao().getGamesPlayed(user.getName()).toString(),
+                                text = user.getGamesPlayed().toString(),
                                 modifier = Modifier.weight(1f),
                                 textAlign = TextAlign.Center
                             )
