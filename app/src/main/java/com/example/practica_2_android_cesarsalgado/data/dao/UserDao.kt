@@ -13,6 +13,12 @@ interface UserDao {
     @Query("select * from User where name = :name")
     fun getByName(name: String?): User
 
+    @Query("select 'games played' from User where name = :name")
+    fun getGamesPlayed(name: String?): Int
+
+    @Query("select 'total correct answers' from User where name = :name")
+    fun getCorrectAnswers(name: String?): Int
+
     @Query("select * from User")
     fun getAll(): List<User>
 
@@ -28,9 +34,9 @@ interface UserDao {
     @Query("update User set name = :name, password = :password where id = :id")
     fun update(id: Int, name: String, password: String): Unit
 
-    /*@Query("update User set gamesPlayed = gamesPlayed + :one where name = :name")
-    fun updateGamesPlayed(name: String, one: Int): Unit
+    @Query("update User set 'games played' = 'games played' + 1 where name = :name")
+    fun updateGamesPlayed(name: String?): Unit
 
-    @Query("update User set totalCorrectAnswers = totalCorrectAnswers + :one where name = :name")
-    fun updateCorrectQuestionsAnswered(name: String, one: Int): Unit*/
+    @Query("update User set 'total correct answers' = 'total correct answers' + 1 where name = :name")
+    fun updateCorrectQuestionsAnswered(name: String?): Unit
 }

@@ -41,12 +41,6 @@ data class User(
     fun getTotalCorrectAnswers(): Int {
         return totalCorrectAnswers
     }
-    fun setGamesPlayed(): Unit {
-        gamesPlayed++
-    }
-    fun setTotalCorrectAnswers(): Unit {
-        gamesPlayed++
-    }
 
     override fun compareTo(other: User): Int {
         var result = 0

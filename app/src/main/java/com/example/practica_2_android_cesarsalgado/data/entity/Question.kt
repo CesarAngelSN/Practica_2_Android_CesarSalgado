@@ -16,10 +16,6 @@ data class Question(
     private var type: String,
     @ColumnInfo(name = "answers")
     private var answers: String,
-    @ColumnInfo(name = "correctAnswerIndex")
-    private var correctAnswerIndex: Int,
-    @ColumnInfo(name = "image")
-    private var image: ByteArray?
 ) {
     fun getId(): Int {
         return id
@@ -33,15 +29,11 @@ data class Question(
     fun getAnswers(): String {
         return answers
     }
-    fun getCorrectAnswerIndex(): Int {
-        return correctAnswerIndex
-    }
     fun getCorrectAnswer(): String {
+        println(answers)
         return answers.split(Regex(";"))[0]
     }
-    fun getImage(): ByteArray? {
-        return image
-    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -52,9 +44,6 @@ data class Question(
         if (description != other.description) return false
         if (type != other.type) return false
         if (answers != other.answers) return false
-        if (correctAnswerIndex != other.correctAnswerIndex) return false
-        if (!image.contentEquals(other.image)) return false
-
         return true
     }
 
@@ -63,8 +52,6 @@ data class Question(
         result = 31 * result + description.hashCode()
         result = 31 * result + type.hashCode()
         result = 31 * result + answers.hashCode()
-        result = 31 * result + correctAnswerIndex
-        result = 31 * result + image.contentHashCode()
         return result
     }
 

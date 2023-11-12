@@ -6,13 +6,17 @@ import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -29,8 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.room.Room
+import com.example.practica_2_android_cesarsalgado.R
 import com.example.practica_2_android_cesarsalgado.data.db.AppDatabase
 import com.example.practica_2_android_cesarsalgado.data.entity.Question
 import java.io.ByteArrayOutputStream
@@ -49,13 +57,15 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
         mutableStateOf(types[0])
     }
     var answers: String = String()
-    var image: ByteArray? = null
     var isErrorTitle by remember {
         mutableStateOf(true)
     }
-    Column (Modifier.fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
+    Column (
+        Modifier
+            .background(colorResource(id = R.color.background))
+            .fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
         Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
-            Text(text = "Write your question")
+            Text(text = "Write your question", Modifier.padding(10.dp), fontSize = 20.sp, color = colorResource(id = R.color.dark_green))
             TextField(value = questionString,
                 onValueChange = {
                 text -> questionString = text
@@ -67,7 +77,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
             isError = isErrorTitle
         )}
         Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally){
-            Text(text = "What kind of question is it?")
+            Text(text = "What kind of question is it?", Modifier.padding(10.dp), fontSize = 20.sp, color = colorResource(id = R.color.dark_green))
             Box (contentAlignment = Alignment.Center) {
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -111,7 +121,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
         var isError4 by remember {
             mutableStateOf(true)
         }
-        if (selectedText.equals("Selection")) {
+        if (selectedText == "Selection") {
             var answer1 by remember {
                 mutableStateOf("")
             }
@@ -129,7 +139,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     value = answer1,
                     onValueChange = { text -> answer1 = text
                         isError1 = answer1.length > 100},
-                    label = { Text("Correct Answer") },
+                    label = { Text("Correct Answer", color = colorResource(id = R.color.dark_green)) },
                     supportingText = {
                         Text(text = "${answer1.length}/100")
                     },
@@ -139,7 +149,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     value = answer2,
                     onValueChange = { text -> answer2 = text
                         isError2 = answer2.length > 100},
-                    label = { Text("Incorrect Answer") },
+                    label = { Text("Incorrect Answer", color = colorResource(id = R.color.dark_green)) },
                     supportingText = {
                         Text(text = "${answer2.length}/100")
                     },
@@ -149,7 +159,7 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     value = answer3,
                     onValueChange = { text -> answer3 = text
                         isError3 = answer3.length > 100},
-                    label = { Text("Incorrect Answer") },
+                    label = { Text("Incorrect Answer", color = colorResource(id = R.color.dark_green)) },
                     supportingText = {
                         Text(text = "${answer3.length}/100")
                     },
@@ -159,15 +169,14 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     value = answer4,
                     onValueChange = { text -> answer4 = text
                         isError4 = answer4.length > 100},
-                    label = { Text("Incorrect Answer") },
+                    label = { Text("Incorrect Answer", color = colorResource(id = R.color.dark_green)) },
                     supportingText = {
                         Text(text = "${answer4.length}/100")
                     },
                     isError = isError4,
                 )
             }
-            answers = (if(answer1.isNotEmpty()) "$answer1;" else "" + if(answer2.isNotEmpty()) "$answer2;" else "" +
-                    if(answer3.isNotEmpty()) "$answer3;" else "" + if(answer4.isNotEmpty()) "$answer4;" else "")
+            answers = "$answer1;$answer2;$answer3;$answer4"
         }
         else {
             var answer1 by remember {
@@ -198,53 +207,29 @@ fun QuestionAddActivity(navController: NavController, appDatabase: AppDatabase, 
                     isError = isError2,
                 )
             }
-            answers = (if(answer1.isNotEmpty()) "$answer1;" else "" + if(answer2.isNotEmpty()) "$answer2;" else "")
-        }
-        Row (Modifier.fillMaxWidth(), Arrangement.SpaceAround, Alignment.CenterVertically){
-            var selectedImageUri by remember {
-                mutableStateOf("")
-            }
-            val getContent = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-                    uri -> selectedImageUri = uri.toString()
-            }
-            Button( onClick = {
-                getContent.launch("image/*")
-                if (selectedImageUri.isNotEmpty()) {
-                    if (selectedImageUri ==  null) {
-                        selectedImageUri = ""
-                        val noURIFound = Toast.makeText(applicationContext,
-                            "No URI found!", Toast.LENGTH_SHORT)
-                        noURIFound.show()
-                    }
-                    else {
-                        val imageBitmap: Bitmap = BitmapFactory.decodeFile(selectedImageUri)
-                        val stream = ByteArrayOutputStream()
-                        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        image= stream.toByteArray()
-                    }
-                }
-            }) {
-                Text(text = "Select Image")
-            }
-            Text(text = selectedImageUri)
+            answers = "$answer1;$answer2"
         }
         Row (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly){
             Button(onClick = {
                 val newQuestion = Toast.makeText(applicationContext,
                     "New question added!", Toast.LENGTH_SHORT)
-                val question = Question(0, questionString, selectedText, answers, 0, image)
+                val question = Question(0, questionString, selectedText, answers)
                 appDatabase.getQuestionDao().insert(question)
                 newQuestion.show()
                 questionString = ""
                 println(appDatabase.getQuestionDao().getAll())
             },
+                Modifier.width(160.dp),
+                colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green)),
             enabled = !isErrorTitle && !isError1 && !isError2 && !isError3 && !isError4) {
-                Text(text = "Add Question")
+                Text(text = "Add Question", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
             Button(onClick = {
                 navController.popBackStack()
-            }) {
-                Text(text = "Back")
+            },
+                Modifier.width(160.dp),
+                colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green))) {
+                Text(text = "Back", fontSize = 18.sp, color = colorResource(id = R.color.background))
             }
         }
     }

@@ -35,9 +35,9 @@ fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
         }
         composable(Paths.QuestionActivity.path + "/{mode}") {
             val mode = it.arguments?.getString("mode")
-            //val userName = it.arguments?.getString("userName")
-            //appDatabase.getUserDao().getByName(userName).setGamesPlayed()
-            QuestionActivity(appDatabase, applicationContext, mode)
+            val userName = it.arguments?.getString("userName")
+            appDatabase.getUserDao().updateGamesPlayed(userName)
+            QuestionActivity(appDatabase, applicationContext, mode, userName)
         }
         composable(Paths.PlayerOptionsActivity.path + "/{userName}") {
             val userName = it.arguments?.getString("userName")
@@ -51,10 +51,10 @@ fun NavigationGraph(appDatabase: AppDatabase, applicationContext: Context) {
             QuestionAddActivity(navController, appDatabase, applicationContext)
         }
         composable(Paths.QuestionDeleteActivity.path) {
-            QuestionDeleteActivity(navController, appDatabase)
+            QuestionDeleteActivity(navController, appDatabase, applicationContext)
         }
         composable(Paths.RankingActivity.path) {
-            RankingActivity(appDatabase)
+            RankingActivity(appDatabase, navController)
         }
     }
 }

@@ -1,16 +1,22 @@
 package com.example.practica_2_android_cesarsalgado.ui.activities
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.EaseInOutElastic
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.EaseOutBounce
+import androidx.compose.animation.core.EaseOutCirc
+import androidx.compose.animation.core.EaseOutElastic
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -56,45 +64,39 @@ fun AuthenticationActivity(navController: NavController) {
         initialValue = 4f,
         targetValue = 5f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = EaseOut),
+            animation = tween(1500, easing = EaseOutCirc),
             repeatMode = RepeatMode.Reverse
         ),
         label = "fontsize"
     )
     Column(
         Modifier
-            .background(colorResource(R.color.light_green))
+            .background(colorResource(R.color.background))
             .fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally) {
-        Row() {
-            //Cambiar en el futuro por texto decorado
-            Text(text = "Welcome!",
-                Modifier
-                    .graphicsLayer {
-                        scaleX = fontSizeTitle
-                        scaleY = fontSizeTitle
-                        transformOrigin = TransformOrigin.Center
-                    }
-                    .align(Alignment.CenterVertically), textAlign = TextAlign.Center,
-                color = colorResource(R.color.light_purple),
-                fontFamily = FontFamily.Cursive, fontStyle = FontStyle.Italic)
-        }
+        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "logo",
+            Modifier
+                .fillMaxWidth(0.6f)
+                .scale(1.2f, 1.2f))
         Column (Modifier.fillMaxWidth(), Arrangement.SpaceEvenly, Alignment.CenterHorizontally) {
             Button(onClick = {
                 navController.navigate("loginactivity")
             },
                 Modifier
-                    .fillMaxWidth(0.7f).align(CenterHorizontally).padding(10.dp),
+                    .fillMaxWidth(0.7f)
+                    .align(CenterHorizontally)
+                    .padding(10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green))) {
-                Text(text = "Log In")
+                Text(text = "Log In", fontSize = 20.sp, color = colorResource(id = R.color.background))
             }
             Button(onClick = {
                 navController.navigate("registeractivity")
             },
                 Modifier
                     .fillMaxWidth(0.7f)
-                    .align(CenterHorizontally).padding(10.dp),
+                    .align(CenterHorizontally)
+                    .padding(10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_green))) {
-                Text(text = "Register")
+                Text(text = "Register", fontSize = 20.sp, color = colorResource(id = R.color.background))
             }
         }
     }

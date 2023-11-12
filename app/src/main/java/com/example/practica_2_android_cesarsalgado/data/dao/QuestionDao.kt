@@ -19,6 +19,9 @@ interface QuestionDao {
     @Query("delete from Question where id = :id")
     fun delete(id: Int): Unit
 
-    @Query("update Question set description = :description, description = :description, correctAnswerIndex = :correctAnswerIndex where id = :id")
-    fun update(id: Int, description: String, correctAnswerIndex: Int): Unit
+    @Query("delete from Question where description = :description")
+    fun deleteByDescription(description: String): Unit
+
+    @Query("update Question set description = :description, description = :description where id = :id")
+    fun update(id: Int, description: String): Unit
 }
